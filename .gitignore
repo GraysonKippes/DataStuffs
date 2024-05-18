@@ -1,0 +1,6 @@
+.vscode/
+build_gcc/
+build_msvc/
+DataStuff-cppcheck-build-dir
+*.bat
+*.cppcheck
