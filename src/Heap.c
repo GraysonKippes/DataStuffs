@@ -5,10 +5,10 @@
 #include <string.h>
 
 // Bubbles the last element up until heap property is restored.
-static void heapUp(Heap *const pHeap);
+static void heapUp(Heap *const pHeap, const size_t index);
 
 // Bubbles the root element down until heap property is restored.
-static void heapDown(Heap *const pHeap);
+static void heapDown(Heap *const pHeap, const size_t index);
 
 Heap newHeap(const size_t initCapacity, const size_t objectSize, CmpFunc cmpFunc)
 {
@@ -103,6 +103,27 @@ size_t heapReverseSearch(const Heap heap, const void *const pObject)
     return invalidIndex;
 }
 
+void heapRemove(Heap *const pHeap, const size_t index)
+{
+    if (!pHeap) {
+        return;
+    } else if (!heapValidate(*pHeap) || index >= pHeap->size) {
+        return;
+    }
+
+    void *const pDeleteObject = pHeap->ppArray[index];
+    pHeap->ppArray[index] = pHeap->ppArray[pHeap->size - 1];
+    pHeap->ppArray[pHeap->size - 1] = NULL;
+    pHeap->size -= 1;
+    const int cmpResult = pHeap->cmpFunc(pHeap->ppArray[index], pDeleteObject);
+    if (cmpResult == -1) {
+        heapUp(pHeap, index);
+    } else if (cmpResult == 1) {
+        heapDown(pHeap, index);
+    }
+    free(pDeleteObject);
+}
+
 void heapPush(Heap *const pHeap, const void *const pObject)
 {
     if (!pHeap || !pObject) {
@@ -124,7 +145,7 @@ void heapPush(Heap *const pHeap, const void *const pObject)
     }
     memcpy(pHeap->ppArray[insertIndex], pObject, pHeap->objectSize);
     pHeap->size += 1;
-    heapUp(pHeap);
+    heapUp(pHeap, insertIndex);
 }
 
 void heapPop(Heap *const pHeap, void *const pObject)
@@ -151,7 +172,7 @@ void heapPop(Heap *const pHeap, void *const pObject)
         return;
     }
     pHeap->ppArray[replaceIndex] = NULL;
-    heapDown(pHeap);
+    heapDown(pHeap, 0);
 }
 
 void heapPushPop(Heap *const pHeap, const void *const pPushObject, void *const pPopObject)
@@ -180,7 +201,7 @@ void heapPushPop(Heap *const pHeap, const void *const pPushObject, void *const p
     memcpy(pInsertObject, pPushObject, pHeap->objectSize);
     free(pHeap->ppArray[0]);
     pHeap->ppArray[0] = pInsertObject;
-    heapDown(pHeap);
+    heapDown(pHeap, 0);
 }
 
 void heapPopPush(Heap *const pHeap, void *const pPopObject, const void *const pPushObject)
@@ -208,22 +229,13 @@ void heapPopPush(Heap *const pHeap, void *const pPopObject, const void *const pP
     memcpy(pInsertObject, pPushObject, pHeap->objectSize);
     free(pHeap->ppArray[0]);
     pHeap->ppArray[0] = pInsertObject;
-    heapDown(pHeap);
+    heapDown(pHeap, 0);
 }
 
-void heapDelete(Heap *const pHeap, const size_t index)
-{
-    if (!pHeap) {
-        return;
-    } else if (!heapValidate(*pHeap) || index >= pHeap->size) {
-        return;
-    }
-}
-
-static void heapUp(Heap *const pHeap)
+static void heapUp(Heap *const pHeap, const size_t index)
 {
     // Bubble-up last element.
-    size_t swapIndex = pHeap->size - 1; // Index to object being bubbled up.
+    size_t swapIndex = index; // Index to object being bubbled up.
     while (true) {
         const size_t parentIndex = swapIndex > 0 ? (swapIndex - 1) / 2 : 0;
         if (pHeap->cmpFunc(pHeap->ppArray[swapIndex], pHeap->ppArray[parentIndex]) == -1) {
@@ -237,10 +249,10 @@ static void heapUp(Heap *const pHeap)
     }
 }
 
-static void heapDown(Heap *const pHeap)
+static void heapDown(Heap *const pHeap, const size_t index)
 {
     // Bubble-down the replacement element.
-    size_t swapIndex = 0;
+    size_t swapIndex = index;
     while (true) {
 
         // Compute indices for both child objects.

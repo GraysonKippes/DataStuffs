@@ -55,6 +55,9 @@ size_t heapSearch(const Heap heap, const void *const pObject);
 //  or SIZE_MAX if no such object is found. 
 size_t heapReverseSearch(const Heap heap, const void *const pObject);
 
+// Removes an arbitrary element from the heap and restores the heap property.
+void heapRemove(Heap *const pHeap, const size_t index);
+
 // Inserts the given object into the heap.
 void heapPush(Heap *const pHeap, const void *const pObject);
 

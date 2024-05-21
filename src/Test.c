@@ -1,3 +1,9 @@
+// Author: Grayson Kippes
+// Date: 5/20/2024
+// Description: interactive menu to test data structures.
+
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #include "BHeap.h"
@@ -12,99 +18,124 @@
 #define ARR_LEN 10
 static const int arr_len = ARR_LEN;
 
-static int testBST(void);
-static int testHeap(void);
+static void menu(void);
+static void menuPrintElements(const Heap heap);
+static void menuPushElement(Heap *const pHeap);
+static void menuPopElement(Heap *const pHeap);
+static void menuSearchElement(const Heap heap);
+static void menuRemoveElement(Heap *const pHeap);
 
 int main(int argc, char *argv[])
 {
 	(void)argc;
 	(void)argv;
-
-	printf("Hello world!\n");
-	//testBST();
-	//testHeap();
-	const size_t pageSize = getPageSize();
-	printf("pageSize = %llu\n", pageSize);
-	
+	menu();
 	return 0;
 }
 
-static int testBST(void)
-{
-	BinarySearchTree bst = newBinarySearchTree(sizeof(int), cmpFuncInt);
-	
-	int vals[ARR_LEN];
-	for (int i = 0; i < arr_len; ++i)
-		vals[i] = (i + 1) * 10;
-	
-	bstInsert(&bst, &vals[0]);
-	bstInsert(&bst, &vals[5]);
-	bstInsert(&bst, &vals[3]);
-	bstInsert(&bst, &vals[7]);
-	bstInsert(&bst, &vals[2]);
-	bstInsert(&bst, &vals[9]);
-	bstInsert(&bst, &vals[1]);
-	bstInsert(&bst, &vals[4]);
-	bstInsert(&bst, &vals[6]);
-	bstInsert(&bst, &vals[8]);
-
-	LinkedList traversal = bstTraverseInOrder(bst);
-
-	int counter = 0;
-	for (LinkedListNode *pNode = traversal.pHeadNode; pNode != NULL; pNode = pNode->pNextNode) {
-		const int value = *(int *)((BinarySearchTreeNode *)pNode->pObject)->pObject;
-		printf("%i: %i\n", counter, value);
-		counter += 1;
-	}
-
-	deleteLinkedList(&traversal);
-	deleteBinarySearchTree(&bst);
-	return 0;
-}
-
-static int testHeap(void)
+static void menu(void)
 {
 	Heap heap = newHeap(64, sizeof(int), cmpFuncInt);
 
-	int vals[ARR_LEN];
-	for (int i = 0; i < arr_len; ++i)
-		vals[i] = (i + 1) * 10;
-
-	heapPush(&heap, &vals[5]);
-	heapPush(&heap, &vals[9]);
-	heapPush(&heap, &vals[1]);
-	heapPush(&heap, &vals[6]);
-	heapPush(&heap, &vals[4]);
-	heapPush(&heap, &vals[2]);
-	heapPush(&heap, &vals[3]);
-	heapPush(&heap, &vals[8]);
-	heapPush(&heap, &vals[7]);
-	heapPush(&heap, &vals[0]);
-
-	for (int i = 0; i < arr_len; ++i) {
-		printf("%i:\t", i);
-		if (heap.ppArray[i]) {
-			const int val = *(int *)heap.ppArray[i];
-			printf("%i\n", val);
-		} else {
-			printf("NULL\n");
+	bool menuRunning = true;
+	while (menuRunning) {
+		printf("(0) Exit.\n");
+		printf("(1) Print number of elements.\n");
+		printf("(2) Print heap capacity.\n");
+		printf("(3) Print elements.\n");
+		printf("(4) Push element.\n");
+		printf("(5) Pop element.\n");
+		printf("(6) Search for element.\n");
+		printf("(7) Remove element.\n");
+		printf("Please enter a command: ");
+		int input = -1;
+		scanf("%i", &input);
+		if (input < 0 || input > 7) {
+			printf("Error: invalid input. Please input command again.\n");
+			continue;
 		}
-	}
 
-	const int insert = 69;
-	int extract = 0;
-	heapPopPush(&heap, &extract, &insert);
-	printf("extr:\t%i\n", extract);
-
-	for (int i = 0; i < arr_len; ++i) {
-		printf("%i:\t", i);
-		if (heap.ppArray[i]) {
-			const int val = *(int *)heap.ppArray[i];
-			printf("%i\n", val);
-		} else {
-			printf("NULL\n");
+		switch(input) {
+			case 0:
+				printf("Exiting program.\n");
+				menuRunning = false;
+				break;
+			case 1: 
+				printf("The heap currently has %llu elements.\n", heap.size);
+				break;
+			case 2: 
+				printf("The heap currently has a capacity of %llu.\n", heap.capacity);
+				break;
+			case 3:
+				menuPrintElements(heap);
+				break;
+			case 4:
+				menuPushElement(&heap);
+				break;
+			case 5:
+				menuPopElement(&heap);
+				break;
+			case 6:
+				menuSearchElement(heap);
+				break;
+			case 7:
+				menuRemoveElement(&heap);
+				break;
 		}
 	}
 
 	deleteHeap(&heap);
+}
+
+static void menuPrintElements(const Heap heap) {
+	printf("Printing %llu elements in the heap...\n", heap.size);
+	for (size_t i = 0; i < heap.size; ++i) {
+		const size_t leftChildIndex = (i << 1) + 1;
+		const size_t rightChildIndex = leftChildIndex + 1;
+		const int val = *(int *)heap.ppArray[i];
+		printf("%llu: %i", i, val);
+		if (leftChildIndex < heap.size) {
+			printf(" -> %llu", leftChildIndex);
+		}
+		if (rightChildIndex < heap.size) {
+			printf(", %llu", rightChildIndex);
+		}
+		printf("\n");
+	}
+}
+
+static void menuPushElement(Heap *const pHeap) {
+	printf("Please enter a value to insert (integer): ");
+	int val = 0;
+	scanf("%i", &val);
+	heapPush(pHeap, &val);
+}
+
+static void menuPopElement(Heap *const pHeap) {
+	int val = 0;
+	heapPop(pHeap, &val);
+	printf("Popped element %i from the heap.\n", val);
+}
+
+static void menuSearchElement(const Heap heap) {
+	printf("Please enter a value to search for (integer): ");
+	int val = 0;
+	scanf("%i", &val);
+	const size_t search = heapSearch(heap, &val);
+	if (search < heap.size) {
+		printf("Value %i found at position %llu in the heap.\n", val, search);
+	} else {
+		printf("Value %i not found in the heap.\n", val);
+	}
+}
+
+static void menuRemoveElement(Heap *const pHeap) {
+	printf("Please enter an index to remove from: ");
+	size_t index = SIZE_MAX;
+	scanf("%llu", &index);
+	if (index < pHeap->size) {
+		heapRemove(pHeap, index);
+	} else {
+		printf("Index %llu not within bounds of heap.\n", index);
+	}
 }
