@@ -56,7 +56,7 @@ bool bstValidate(const BinarySearchTree bst)
     return bst.objectSize > 0 && bst.cmpFunc;
 }
 
-bool bstInsert(BinarySearchTree *const pBst, void *const pObject)
+bool bstInsert(BinarySearchTree *const pBst, const void *const pObject)
 {
     if (!pBst || !pObject) {
         return false;
@@ -103,7 +103,7 @@ bool bstInsert(BinarySearchTree *const pBst, void *const pObject)
     return true;
 }
 
-bool bstSearch(BinarySearchTree *const pBst, void *const pObject, BinarySearchTreeNode **const ppNode)
+bool bstSearch(BinarySearchTree *const pBst, const void *const pObject, BinarySearchTreeNode **const ppNode)
 {
     if (!pBst || !pObject || !ppNode) {
         return false;
@@ -132,7 +132,7 @@ end_loop:
     return true;
 }
 
-bool bstRemove(BinarySearchTree *const pBst, void *const pObject)
+bool bstRemove(BinarySearchTree *const pBst, const void *const pObject)
 {
     if (!pBst || !pObject) {
         return false;

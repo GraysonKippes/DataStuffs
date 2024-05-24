@@ -52,6 +52,7 @@ void deleteHeap(Heap *const pHeap)
     }
     pHeap->capacity = 0;
     pHeap->size = 0;
+    pHeap->objectSize = 0;
 }
 
 bool heapValidate(const Heap heap)

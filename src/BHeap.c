@@ -17,6 +17,7 @@ size_t getPageSize(void)
 #else
 size_t getPageSize(void)
 {
-    return 0LLU;
+    // If no platform can be identiified, then just use 4096, it will work anyways.
+    return 4096LLU;
 }
 #endif

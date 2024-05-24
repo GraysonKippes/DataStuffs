@@ -39,15 +39,15 @@ bool bstValidate(const BinarySearchTree bst);
 
 // Inserts a new node into the binary search tree containing the specified value.
 // Returns true if the function executed successfully, false otherwise.
-bool bstInsert(BinarySearchTree *const pBst, void *const pObject);
+bool bstInsert(BinarySearchTree *const pBst, const void *const pObject);
 
 // Searches for a node containing the specified value in the binary search tree.
 // Returns true if the function executed successfully, false otherwise.
-bool bstSearch(BinarySearchTree *const pBst, void *const pObject, BinarySearchTreeNode **const ppNode);
+bool bstSearch(BinarySearchTree *const pBst, const void *const pObject, BinarySearchTreeNode **const ppNode);
 
 // Deletes a node containing the specified value in the binary search tree.
 // Returns true if the function if such a node was successfully found and deleted, false otherwise.
-bool bstRemove(BinarySearchTree *const pBst, void *const pObject);
+bool bstRemove(BinarySearchTree *const pBst, const void *const pObject);
 
 // Returns a linked list containing the nodes in the binary search tree from an in-order traversal.
 LinkedList bstTraverseInOrder(const BinarySearchTree bst);

@@ -33,7 +33,7 @@ void deleteLinkedList(LinkedList *const pLinkedList)
 
 bool linkedListValidate(const LinkedList linkedList)
 {
-    return (linkedList.pHeadNode && linkedList.pTailNode || !linkedList.pHeadNode && !linkedList.pTailNode)
+    return ((linkedList.pHeadNode && linkedList.pTailNode) || (!linkedList.pHeadNode && !linkedList.pTailNode))
         && linkedList.objectSize > 0;
 }
 

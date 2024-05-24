@@ -3,18 +3,6 @@ cmake_minimum_required(VERSION 3.27)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-set(COMPILE_OPTIONS_GCC, 
-	"-std=c17 -g -Wpedantic -Wall -Wextra
-	-Werror=return-type 
-	-Werror=implicit-function-declaration 
-	-Werror=implicit-int
-	-Werror=sign-compare
-	-Werror=stringop-overread
-	-Werror=incompatible-pointer-types
-	-Werror=int-conversion
-	-Werror=format"
-)
-
 project(DataStuff VERSION 0.0)
 add_library(DataStuff 
 	src/BHeap.c
@@ -25,9 +13,19 @@ add_library(DataStuff
     src/Heap.c 
     src/LinkedList.c 
     src/Stack.c
+	src/Vector.c
 )
 target_include_directories(DataStuff PUBLIC "${PROJECT_SOURCE_DIR}/include/DataStuff/")
-target_compile_options(DataStuff PUBLIC ${COMPILE_OPTIONS_GCC})
+target_compile_options(DataStuff PUBLIC -std=c17 -g -Wpedantic -Wall -Wextra
+	-Werror=return-type 
+	-Werror=implicit-function-declaration 
+	-Werror=implicit-int
+	-Werror=sign-compare
+	-Werror=stringop-overread
+	-Werror=incompatible-pointer-types
+	-Werror=int-conversion
+	-Werror=format
+)
 
 project(DataStuffTest)
 add_executable(DataStuffTest src/Test.c)

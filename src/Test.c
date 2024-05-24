@@ -14,9 +14,7 @@
 #include "Heap.h"
 #include "LinkedList.h"
 #include "Stack.h"
-
-#define ARR_LEN 10
-static const int arr_len = ARR_LEN;
+#include "Vector.h"
 
 static void menu(void);
 static void menuPrintElements(const Heap heap);
@@ -35,8 +33,8 @@ int main(int argc, char *argv[])
 
 static void menu(void)
 {
+	printf("Min-heap demo.");
 	Heap heap = newHeap(64, sizeof(int), cmpFuncInt);
-
 	bool menuRunning = true;
 	while (menuRunning) {
 		printf("(0) Exit.\n");
